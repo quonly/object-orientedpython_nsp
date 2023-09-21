@@ -2,10 +2,33 @@ from Account import *
 
 class Bank():
 
-    def __init__(self):
+    def __init__(self, hours, address, phone):
         self.accountsDict = {}
         self.nextAccountNumber = 0
+        self.hours = hours
+        self.address = address
+        self.phone = phone
+        
+    def askForValidAccountNumber(self):
+        accountNumber = input('What is your account number?')
+        try:
+            accountNumber = int(accountNumber)
+        except ValueError:
+            raise AbortTransaction('The account number must be an integer')
+        if accountNumber not in self.accountsDict:
+            raise AbortTransaction('There is no account ' + str(accountNumber))
+        return accountNumber
 
+    def getUsersAccount(self):
+        accountNumber = self.askForValidAccountNumber()
+        oAccount = self.accountsDict[accountNumber]
+        self.askForValidPassword(oAccount)
+        return oAccount
+    
+    def askForValidPassword(self, oAccount):
+        password = input('Please enter your password: ')
+        oAccount.checkPasswordMatch(password)
+        
     def createAccount(self, theName, theStartingAmount, thePassword):
         oAccount = Account(theName, theStartingAmount, thePassword)
         newAccountNumber = self.nextAccountNumber
